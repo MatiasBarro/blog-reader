@@ -1,0 +1,523 @@
+{
+  "name": "AWS Blog Scrapper",
+  "nodes": [
+    {
+      "parameters": {
+        "url": "https://aws.amazon.com/blogs/aws/",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        224,
+        32
+      ],
+      "id": "7b69672a-f9c1-47d9-b9d8-a02963649495",
+      "name": "HTTP Request",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "title",
+              "cssSelector": "article.blog-post > div> div:nth-of-type(2) > h2 > a > span",
+              "returnArray": true
+            },
+            {
+              "key": "date",
+              "cssSelector": "article.blog-post > div> div:nth-of-type(2) > footer > span:nth-of-type(2) > time",
+              "returnValue": "attribute",
+              "attribute": "datetime",
+              "returnArray": true
+            },
+            {
+              "key": "link",
+              "cssSelector": "article.blog-post > div> div:nth-of-type(2) > h2 > a ",
+              "returnValue": "attribute",
+              "attribute": "href",
+              "returnArray": true
+            },
+            {}
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        448,
+        32
+      ],
+      "id": "8f28fbf9-916c-4f94-9f8b-2a473a5cf473",
+      "name": "HTML"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "title,date,link",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        672,
+        32
+      ],
+      "id": "6ce67644-0604-4943-b189-82550874ea45",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "model": "qwen/qwen3-30b-a3b-instruct-2507",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        2272,
+        384
+      ],
+      "id": "26327769-1b93-40ef-b44b-b9b48e3378f4",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "1jX9CBukZCziFxWY",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
+      "typeVersion": 1,
+      "position": [
+        2400,
+        384
+      ],
+      "id": "f3e36154-69e5-4930-a8e5-a5893ea4cdb5",
+      "name": "Recursive Character Text Splitter"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        2864,
+        32
+      ],
+      "id": "5ec3630e-d523-4aa6-8ce8-6bab04f58035",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "tableName": "blog-articles",
+        "dataToSend": "autoMapInputData",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.awsDynamoDb",
+      "typeVersion": 1,
+      "position": [
+        3088,
+        32
+      ],
+      "id": "281df252-9446-43f0-8c3b-0e3c92987d9b",
+      "name": "Create or update an item",
+      "credentials": {
+        "aws": {
+          "id": "BzfaCPAZxe3Y9nhe",
+          "name": "AWS account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableName": "blog-articles",
+        "keysUi": {
+          "keyValues": [
+            {
+              "key": "id",
+              "value": "={{ $json.id }}"
+            },
+            {
+              "key": "blog",
+              "value": "={{ $json.blog }}"
+            }
+          ]
+        },
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.awsDynamoDb",
+      "typeVersion": 1,
+      "position": [
+        1344,
+        112
+      ],
+      "id": "eaea7311-7608-4b58-af2a-719039cbe66e",
+      "name": "Get an item",
+      "credentials": {
+        "aws": {
+          "id": "BzfaCPAZxe3Y9nhe",
+          "name": "AWS account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "41c5ac3f-4dd9-4000-8804-ea0c8d49835a",
+              "name": "blog",
+              "value": "amazon",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        896,
+        32
+      ],
+      "id": "9b2c6db1-7089-4701-8ead-f32b9d1adf39",
+      "name": "Add blog field"
+    },
+    {
+      "parameters": {
+        "type": "SHA256",
+        "value": "={{ $json.link }}",
+        "dataPropertyName": "id"
+      },
+      "type": "n8n-nodes-base.crypto",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        32
+      ],
+      "id": "18b93222-f368-44ee-a615-d747a35fd512",
+      "name": "Generate id"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.link }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1792,
+        160
+      ],
+      "id": "da98fe45-e924-4f8c-b511-e69163ba287a",
+      "name": "Request Blog Article"
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "summary",
+              "cssSelector": "section.blog-post-content",
+              "skipSelectors": "div,a"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        2016,
+        160
+      ],
+      "id": "fbe97f83-45da-416e-a381-af88171228a3",
+      "name": "Extract article content"
+    },
+    {
+      "parameters": {
+        "chunkingMode": "advanced",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainSummarization",
+      "typeVersion": 2.1,
+      "position": [
+        2240,
+        160
+      ],
+      "id": "7180afa6-5c6b-4075-af8a-35ae5c5b1b2f",
+      "name": "Create article summary"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3e6de96f-3800-4cdc-9790-348dcc773719",
+              "name": "=summary",
+              "value": "={{ $json.output.text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2640,
+        160
+      ],
+      "id": "d73f88b9-3be1-4ed0-8d42-2c905f77895b",
+      "name": "Extract article summary from output"
+    },
+    {
+      "parameters": {
+        "mergeByFields": {
+          "values": [
+            {
+              "field1": "id",
+              "field2": "id"
+            }
+          ]
+        },
+        "resolve": "preferInput1",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.compareDatasets",
+      "typeVersion": 2.3,
+      "position": [
+        1568,
+        0
+      ],
+      "id": "efffaa28-17da-4c91-801a-52c0e1d46df8",
+      "name": "Filter out existent articles"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "daysInterval": 2,
+              "triggerAtHour": 10
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        32
+      ],
+      "id": "80416719-8b64-4f3d-8c0a-e9cdadeaacd0",
+      "name": "Schedule Trigger"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTML": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Add blog field",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Create article summary",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recursive Character Text Splitter": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Create article summary",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create or update an item": {
+      "main": [
+        []
+      ]
+    },
+    "Get an item": {
+      "main": [
+        [
+          {
+            "node": "Filter out existent articles",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Create or update an item",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add blog field": {
+      "main": [
+        [
+          {
+            "node": "Generate id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate id": {
+      "main": [
+        [
+          {
+            "node": "Get an item",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Filter out existent articles",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Request Blog Article": {
+      "main": [
+        [
+          {
+            "node": "Extract article content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract article content": {
+      "main": [
+        [
+          {
+            "node": "Create article summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create article summary": {
+      "main": [
+        [
+          {
+            "node": "Extract article summary from output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract article summary from output": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Filter out existent articles": {
+      "main": [
+        [
+          {
+            "node": "Request Blog Article",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "018feda7-2de3-4c50-b490-6bda9cccf0b3",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "4ec6e526b9272ccaf84bccb134225d02d62d1b82e29e5393f6f69abb0e3d05a3"
+  },
+  "id": "sAi9n2YMIwkQdPED",
+  "tags": []
+}
