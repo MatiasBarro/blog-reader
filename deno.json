@@ -5,5 +5,9 @@
     "node-globals",
     "unsafe-proto",
     "sloppy-imports"
-  ]
+  ],
+  "tasks": {
+    "sw-build": "deno run --allow-all --env-file scripts/sw-build",
+    "build": "deno run sw-build && next build"
+  }
 }

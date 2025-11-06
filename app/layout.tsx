@@ -3,7 +3,8 @@ import "./globals.css";
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 import { Roboto } from 'next/font/google';
 import { ThemeProvider } from '@mui/material/styles';
-import theme from './theme.ts';
+import theme from './theme.tsx';
+import { FirebasePushNotification } from "../components/firebase-push-notification/index.tsx";
 
 const roboto = Roboto({
   weight: ['300', '400', '500', '700'],
@@ -27,6 +28,7 @@ export default function RootLayout({
       <body>
         <AppRouterCacheProvider options={{ key: 'css' }}>
           <ThemeProvider theme={theme}>
+             <FirebasePushNotification />
              {children}
           </ThemeProvider>
         </AppRouterCacheProvider>
