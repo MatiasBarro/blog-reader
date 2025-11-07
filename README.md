@@ -4,6 +4,10 @@ This repository is an experiment to test n8n automation.
 
 ## Push notification
 
+Push notifications are sent through SNS, using Firebase integration to process them in the application
+
+https://docs.aws.amazon.com/sns/latest/dg/mobile-push-send.html
+
 Firebase must be set up to enable push notifications, both in frontend application and in the SW.
 
 ### Service worker
