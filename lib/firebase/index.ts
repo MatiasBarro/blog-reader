@@ -11,19 +11,13 @@ export const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
 };
 
-let app: FirebaseApp;
-let messaging: Messaging; 
-
-if (typeof window !== "undefined" && "navigator" in window) {
-  const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
-  messaging = getMessaging(app);
-  // getToken(messaging, {vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPID_PUBLIC_KEY}).then((currentToken) => {
-  //   console.log('currentToken', currentToken);
-  // });
-  onMessage(messaging, (payload) => {
-    console.log('Message received. ', payload);
-  })
+export function initializeFirebase(): {app: FirebaseApp | null, messaging: Messaging | null} {
+  let app = null;
+  let messaging = null; 
+  if (typeof window !== "undefined" && "navigator" in window) {
+    app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+    messaging = getMessaging(app);
+  }
+  
+  return { app, messaging };
 }
-
-
-export { app, messaging };
