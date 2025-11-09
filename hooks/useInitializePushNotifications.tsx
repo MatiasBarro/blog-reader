@@ -14,7 +14,7 @@ const firebaseConfig = {
 };
 
 async function updateToken(token: string) {
-  await fetch('/api/notification_token', {
+  await fetch('/api/notification_subscribe', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -22,6 +22,7 @@ async function updateToken(token: string) {
     body: JSON.stringify({ token }),
   });
 }
+
 function initializeFirebase() {
   const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
   const messaging = getMessaging(app);

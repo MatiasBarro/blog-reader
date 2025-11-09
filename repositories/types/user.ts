@@ -4,7 +4,7 @@ export interface UserKey {
 
 export interface User extends UserKey {
     clerkId: string;
-    notificationToken: string;
+    snsEndpointArn: string;
     createdAt: string;
     updatedAt: string;
 }
