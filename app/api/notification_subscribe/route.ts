@@ -3,6 +3,7 @@ import { userRepository } from "../../../repositories";
 import { snsClient } from "../../../lib/aws/sns";
 
 // TODO: ADD BODY VALIDATION
+// TODO: check subscription when user already exists
 export async function POST(req: Request) {
   const [body, user] = await Promise.all([req.json(), currentUser()]);
 
@@ -29,6 +30,9 @@ export async function POST(req: Request) {
       createdAt: dbUser?.createdAt || new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     });
+
+    // subscribe to sns topic
+    await snsClient.subscribe(process.env.AWS_BLOG_READER_SNS_TOPIC_ARN!, snsEndpointArn);
     
     return Response.json({ message: 'Token Update Success' })
   }

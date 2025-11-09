@@ -1,5 +1,5 @@
 
-import { CreatePlatformEndpointCommand, GetEndpointAttributesCommand, SetEndpointAttributesCommand, SNSClient } from '@aws-sdk/client-sns';
+import { CreatePlatformEndpointCommand, GetEndpointAttributesCommand, SetEndpointAttributesCommand, SNSClient, SubscribeCommand } from '@aws-sdk/client-sns';
 export class SnsClient {
     private clientInstance: SNSClient
     constructor() {
@@ -37,7 +37,7 @@ export class SnsClient {
         return response.Attributes;
     }
 
-    public async updateEndpointToken(endpointArn: string, token: string) {
+    public updateEndpointToken(endpointArn: string, token: string) {
         const request = new SetEndpointAttributesCommand({
             EndpointArn: endpointArn,
             Attributes: {
@@ -46,6 +46,16 @@ export class SnsClient {
             }
         });
 
-        await this.clientInstance.send(request);
+        return this.clientInstance.send(request);
+    }
+
+    public subscribe(topicArn: string, endpointArn: string) {
+        const request = new SubscribeCommand({
+            TopicArn: topicArn,
+            Protocol: 'application',
+            Endpoint: endpointArn
+        });
+
+        return this.clientInstance.send(request);
     }
 }
