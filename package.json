@@ -10,6 +10,8 @@
     "sw-build": "esbuild lib/firebase/sw.ts --bundle --outfile=public/firebase-messaging-sw.js --platform=browser --define:process.env.NEXT_PUBLIC_FIREBASE_API_KEY='asdf'"
   },
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.927.0",
+    "@aws-sdk/util-dynamodb": "^3.927.0",
     "@clerk/nextjs": "^6.34.5",
     "@emotion/cache": "^11.14.0",
     "@mui/material-nextjs": "^7.3.3",
