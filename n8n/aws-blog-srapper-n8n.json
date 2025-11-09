@@ -77,7 +77,7 @@
       "typeVersion": 1,
       "position": [
         2272,
-        384
+        380
       ],
       "id": "26327769-1b93-40ef-b44b-b9b48e3378f4",
       "name": "OpenRouter Chat Model",
@@ -96,7 +96,7 @@
       "typeVersion": 1,
       "position": [
         2400,
-        384
+        380
       ],
       "id": "f3e36154-69e5-4930-a8e5-a5893ea4cdb5",
       "name": "Recursive Character Text Splitter"
@@ -159,7 +159,7 @@
       "typeVersion": 1,
       "position": [
         1344,
-        112
+        104
       ],
       "id": "eaea7311-7608-4b58-af2a-719039cbe66e",
       "name": "Get an item",
@@ -218,7 +218,7 @@
       "typeVersion": 4.2,
       "position": [
         1792,
-        160
+        156
       ],
       "id": "da98fe45-e924-4f8c-b511-e69163ba287a",
       "name": "Request Blog Article"
@@ -241,7 +241,7 @@
       "typeVersion": 1.2,
       "position": [
         2016,
-        160
+        156
       ],
       "id": "fbe97f83-45da-416e-a381-af88171228a3",
       "name": "Extract article content"
@@ -255,7 +255,7 @@
       "typeVersion": 2.1,
       "position": [
         2240,
-        160
+        156
       ],
       "id": "7180afa6-5c6b-4075-af8a-35ae5c5b1b2f",
       "name": "Create article summary"
@@ -278,7 +278,7 @@
       "typeVersion": 3.4,
       "position": [
         2640,
-        160
+        156
       ],
       "id": "d73f88b9-3be1-4ed0-8d42-2c905f77895b",
       "name": "Extract article summary from output"
@@ -324,6 +324,44 @@
       ],
       "id": "80416719-8b64-4f3d-8c0a-e9cdadeaacd0",
       "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "topic": {
+          "__rl": true,
+          "value": "arn:aws:sns:us-east-2:858086112859:blog-reader-notifications",
+          "mode": "list",
+          "cachedResultName": "blog-reader-notifications",
+          "cachedResultUrl": "https://us-east-2.console.aws.amazon.com/sns/v3/home?region=us-east-2#/topic/arn:aws:sns:us-east-2:858086112859:blog-reader-notifications"
+        },
+        "subject": "New Blog Entry",
+        "message": "=\"{\\\"title\\\": \\\"New Blog Entry\\\", \\\"body\\\": \\\"{{$json.title.removeMarkdown().removeTags().replaceSpecialChars().replaceAll('\\n',' ')}}\\\"}\""
+      },
+      "type": "n8n-nodes-base.awsSns",
+      "typeVersion": 1,
+      "position": [
+        3536,
+        32
+      ],
+      "id": "b725825a-79d1-4eae-81b5-1c062af983d3",
+      "name": "AWS SNS",
+      "credentials": {
+        "aws": {
+          "id": "BzfaCPAZxe3Y9nhe",
+          "name": "AWS account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        3312,
+        32
+      ],
+      "id": "1a0d624b-19d7-4f91-b8c8-1dd38505f8d3",
+      "name": "Limit"
     }
   ],
   "pinData": {},
@@ -385,7 +423,13 @@
     },
     "Create or update an item": {
       "main": [
-        []
+        [
+          {
+            "node": "Limit",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     },
     "Get an item": {
@@ -502,6 +546,22 @@
         [
           {
             "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AWS SNS": {
+      "main": [
+        []
+      ]
+    },
+    "Limit": {
+      "main": [
+        [
+          {
+            "node": "AWS SNS",
             "type": "main",
             "index": 0
           }

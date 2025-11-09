@@ -10,6 +10,14 @@ https://docs.aws.amazon.com/sns/latest/dg/mobile-push-send.html
 
 Firebase must be set up to enable push notifications, both in frontend application and in the SW.
 
+### SNS FCM Message Body example
+```json
+{
+    "default": "Default message required",
+    "GCM":"{\"notification\": {\"title\": \"Test SNS\", \"body\": \"Message from SNS\"}, \"data\": {\"custom_key\": \"custom_value\"}}"
+}
+```
+
 ### Service worker
 
 Service worker code is in `lib/sw.ts`. The script `sw-build.ts` located in scripts folder bundles sw code into a javascript file and places it in public folder using `esbuild`.

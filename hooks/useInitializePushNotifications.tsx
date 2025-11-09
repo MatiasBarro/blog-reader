@@ -32,7 +32,6 @@ function initializeFirebase() {
 
 export function useInitializePushNotifications() {
   useEffect(() => {
-    console.log('Requesting permission...');
     Notification.requestPermission().then((permission) => {
       if (permission === 'granted') {
         const { messaging } = initializeFirebase();

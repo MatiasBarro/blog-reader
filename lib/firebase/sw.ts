@@ -15,13 +15,24 @@ const app = initializeApp({
 const messaging = getMessaging(app);
 
 onBackgroundMessage(messaging, (payload) => {
-  const {title, body} = payload.notification || {};
+  if(!payload?.data?.default){
+    console.error('Invalid notification payload', payload);
+    return
+  }
+
+  //remove escaped quotes
+  const cleanMessage = payload.data.default
+  .replace(/^\"(.+)\"$/,'$1')
+  .replace(/\\(["'])/g, '$1');
+
+  console.log('clean message', cleanMessage)
+
+  const {title, body}: { title: string; body: string } = JSON.parse(cleanMessage);
   
   const notificationOptions = {
     body,
     icon: '/favicon.ico',
   };
-
 
   self.registration.showNotification(title,
     notificationOptions);
