@@ -1,5 +1,6 @@
 import { dynamoDbClient } from '../lib/aws/dynamoDb/index.ts';
-import { Repository } from "./repository.ts";
-import { User, UserKey } from "./types/user.ts";
+import { BlogArticleRepository } from './blog-article.respository.ts';
+import { UserRepository } from './user.repository.ts';
 
-export const userRepository = new Repository<UserKey, User>(dynamoDbClient, 'blog-reader-users');
+export const userRepository = new UserRepository(dynamoDbClient);
+export const blogArticleRepository = new BlogArticleRepository(dynamoDbClient);
