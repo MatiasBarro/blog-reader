@@ -21,19 +21,20 @@
     "@mui/material-nextjs": "^7.3.3",
     "baseline-browser-mapping": "^2.9.4",
     "firebase": "^12.5.0",
+    "next": "16.0.0",
     "react": "19.2.0",
     "react-dom": "19.2.0",
-    "next": "16.0.0"
+    "react-markdown": "^10.1.0"
   },
   "devDependencies": {
-    "esbuild": "^0.25.12",
-    "typescript": "^5",
+    "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@tailwindcss/postcss": "^4",
-    "tailwindcss": "^4",
+    "esbuild": "^0.25.12",
     "eslint": "^9",
-    "eslint-config-next": "16.0.0"
+    "eslint-config-next": "16.0.0",
+    "tailwindcss": "^4",
+    "typescript": "^5"
   }
 }

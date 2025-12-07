@@ -26,6 +26,7 @@ export class BlogArticleRepository extends Repository<BlogArticleKey,BlogArticle
             ExpressionAttributeValues: {
                 ':blog': marshall('amazon')
             },
+            Limit: 20,
             ScanIndexForward: false     
         })
     }

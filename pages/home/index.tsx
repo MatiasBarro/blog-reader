@@ -1,50 +1,63 @@
 'use client';
 
-import { Button, Typography, Container, Box, Stack } from '@mui/material';
+import type { BlogArticle } from '@/repositories/blog-article.respository';
+import {
+  Box,
+  Container,
+  Divider,
+  Link,
+  Stack,
+  Typography,
+} from '@mui/material';
+import ReactMarkdown from 'react-markdown';
+// import remarkGfm from 'remark-gfm';
 import { useInitializePushNotifications } from '../../hooks/useInitializePushNotifications.tsx';
 
-const Home: React.FC = () => {
+interface Props {
+  articles: BlogArticle[];
+}
+
+const Home: React.FC<Props> = ({ articles }) => {
   useInitializePushNotifications();
 
   return (
-    <Container maxWidth="md">
-      <Box
-        sx={{
-          minHeight: '100vh',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          gap: 4,
-        }}
-      >
-        <Typography variant="h2" component="h1" align="center" gutterBottom>
-          MUI Setup Complete!
-        </Typography>
-
+    <Container maxWidth="lg">
+      <Typography variant="h4" gutterBottom sx={{ mt: 4 }}>
+        Latest Amazon Blog Articles
+      </Typography>
+      <Stack spacing={3} sx={{ mt: 2 }}>
+        {articles.map((article, index) => (
+          <Box key={article.id}>
+            <Link
+              href={article.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              variant="h6"
+              underline="hover"
+              sx={{ display: 'block', mb: 1 }}
+            >
+              {article.title}
+            </Link>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+              {article.date}
+            </Typography>
+            <Box sx={{ mb: 2 }}>
+              <ReactMarkdown>{article.summary}</ReactMarkdown>
+            </Box>
+            {index < articles.length - 1 && <Divider />}
+          </Box>
+        ))}
+      </Stack>
+      {articles.length === 0 && (
         <Typography
-          variant="body1"
-          align="center"
+          variant="h6"
           color="text.secondary"
-          sx={{ mb: 4 }}
+          align="center"
+          sx={{ mt: 4 }}
         >
-          Material-UI has been successfully integrated with your Deno Next.js
-          project.
+          No articles available.
         </Typography>
-
-        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-          <Button variant="contained" href="https://mui.com" target="_blank">
-            MUI Documentation
-          </Button>
-          <Button
-            variant="outlined"
-            href="https://nextjs.org/docs"
-            target="_blank"
-          >
-            Next.js Docs
-          </Button>
-        </Stack>
-      </Box>
+      )}
     </Container>
   );
 };
