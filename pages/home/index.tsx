@@ -1,9 +1,9 @@
 'use client';
 
 import { Button, Typography, Container, Box, Stack } from '@mui/material';
-import { useInitializePushNotifications } from "../../hooks/useInitializePushNotifications.tsx";
+import { useInitializePushNotifications } from '../../hooks/useInitializePushNotifications.tsx';
 
-export const Home: React.FC = () => {
+const Home: React.FC = () => {
   useInitializePushNotifications();
 
   return (
@@ -48,3 +48,5 @@ export const Home: React.FC = () => {
     </Container>
   );
 };
+
+export default Home;
