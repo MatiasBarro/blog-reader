@@ -42,7 +42,17 @@ const Home: React.FC<Props> = ({ articles }) => {
               {article.date}
             </Typography>
             <Box sx={{ mb: 2 }}>
-              <ReactMarkdown>{article.summary}</ReactMarkdown>
+              <ReactMarkdown
+                components={{
+                  p: ({ children, ...props }) => (
+                    <Typography variant="body2" {...props}>
+                      {children}
+                    </Typography>
+                  ),
+                }}
+              >
+                {article.summary}
+              </ReactMarkdown>
             </Box>
             {index < articles.length - 1 && <Divider />}
           </Box>

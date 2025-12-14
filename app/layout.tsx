@@ -1,11 +1,10 @@
 import type { Metadata } from 'next';
-import './globals.css';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 import { Roboto } from 'next/font/google';
 import { ThemeProvider } from '@mui/material/styles';
 import theme from './theme.tsx';
 import { ClerkProvider, UserButton } from '@clerk/nextjs';
-import { AppBar, Toolbar, Typography, Button } from '@mui/material';
+import { AppBar, Toolbar, Typography } from '@mui/material';
 
 const roboto = Roboto({
   weight: ['300', '400', '500', '700'],
@@ -13,6 +12,7 @@ const roboto = Roboto({
   display: 'swap',
   variable: '--font-roboto',
 });
+
 
 export const metadata: Metadata = {
   title: 'Blog Reader',
