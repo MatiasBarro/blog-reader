@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 import ReactMarkdown from 'react-markdown';
 // import remarkGfm from 'remark-gfm';
-import { useInitializePushNotifications } from '../../hooks/useInitializePushNotifications.tsx';
+import { useInitializePushNotifications } from '../../../hooks/useInitializePushNotifications.tsx';
 
 interface Props {
   articles: BlogArticle[];

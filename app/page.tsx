@@ -1,4 +1,4 @@
-import HomePage from '../pages/home';
+import HomePage from '../components/pages/home';
 import { blogArticleRepository } from '@/repositories';
 
 export default async function Home() {

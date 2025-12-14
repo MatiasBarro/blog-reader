@@ -4,10 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev --port 4000",
-    "build": "next build",
+    "build": "npm run sw-build && next build",
     "start": "next start",
     "lint": "eslint",
-    "sw-build": "esbuild lib/firebase/sw.ts --bundle --outfile=public/firebase-messaging-sw.js --platform=browser --define:process.env.NEXT_PUBLIC_FIREBASE_API_KEY='asdf'"
+    "sw-build": "esbuild lib/firebase/sw.ts --bundle --outfile=public/firebase-messaging-sw.js --platform=browser"
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.927.0",
@@ -19,7 +19,6 @@
     "@emotion/styled": "^11.14.1",
     "@mui/material": "^7.3.6",
     "@mui/material-nextjs": "^7.3.3",
-    "baseline-browser-mapping": "^2.9.4",
     "firebase": "^12.5.0",
     "next": "16.0.0",
     "react": "19.2.0",
@@ -31,10 +30,11 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "baseline-browser-mapping": "^2.9.7",
     "esbuild": "^0.25.12",
     "eslint": "^9",
     "eslint-config-next": "16.0.0",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "5.9.3"
   }
 }

@@ -1,4 +1,4 @@
-import * as esbuild from 'npm:esbuild';
+import * as esbuild from 'esbuild';
 
 esbuild.build({
   entryPoints: ['lib/firebase/sw.ts'], // Your entry point(s)
